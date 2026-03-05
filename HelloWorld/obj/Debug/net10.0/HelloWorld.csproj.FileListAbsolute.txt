@@ -7,6 +7,7 @@
 /Users/iga.notofficial/Documents/programy_c++/dotnet-zajecia/projektowanie-wizualne-dla-bioinf/HelloWorld/obj/Debug/net10.0/HelloWorld.AssemblyInfoInputs.cache
 /Users/iga.notofficial/Documents/programy_c++/dotnet-zajecia/projektowanie-wizualne-dla-bioinf/HelloWorld/obj/Debug/net10.0/HelloWorld.AssemblyInfo.cs
 /Users/iga.notofficial/Documents/programy_c++/dotnet-zajecia/projektowanie-wizualne-dla-bioinf/HelloWorld/obj/Debug/net10.0/HelloWorld.csproj.CoreCompileInputs.cache
+/Users/iga.notofficial/Documents/programy_c++/dotnet-zajecia/projektowanie-wizualne-dla-bioinf/HelloWorld/obj/Debug/net10.0/HelloWorld.sourcelink.json
 /Users/iga.notofficial/Documents/programy_c++/dotnet-zajecia/projektowanie-wizualne-dla-bioinf/HelloWorld/obj/Debug/net10.0/HelloWorld.dll
 /Users/iga.notofficial/Documents/programy_c++/dotnet-zajecia/projektowanie-wizualne-dla-bioinf/HelloWorld/obj/Debug/net10.0/refint/HelloWorld.dll
 /Users/iga.notofficial/Documents/programy_c++/dotnet-zajecia/projektowanie-wizualne-dla-bioinf/HelloWorld/obj/Debug/net10.0/HelloWorld.pdb
