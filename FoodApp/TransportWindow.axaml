@@ -1,0 +1,16 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="FoodApp.TransportWindow"
+        Title="Transport" Width="350" Height="300">
+
+    StackPanel Margin="20">
+        <TextBlock Text="Opcje transportu:" FontSize="18"/>
+
+        <CheckBox x:Name="Bike" Content="Dostawa rowerem +5 zł"/>
+        <CheckBox x:Name="Car" Content="Dostawa samochodem +10 zł"/>
+        <CheckBox x:Name="Express" Content="Dostawa ekspresowa +15 zł"/>
+        <CheckBox x:Name="Pickup" Content="Odbiór osobisty (bezpłatny)"/>
+        
+        <Button Content="Zapisz" Margin="0,20,0,0" Click="Save"/>
+    </StackPanel>
+</Window>
