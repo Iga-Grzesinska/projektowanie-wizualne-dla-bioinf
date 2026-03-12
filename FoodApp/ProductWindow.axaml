@@ -1,0 +1,17 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="FoodApp.ProductWindow"
+        Title="Wybór produktów" Width="400" Height="350">
+
+	<StackPanel Margin="20">
+		<TextBlock Text="Lista Produktów" FontSize="18"/>
+		
+		<ListBox x:Name="ProductList" Height="200"/>
+
+		<CheckBox xName="ExtraSauce" Content="Dodatkowy Sos +2 zł"/>
+		<StackPanel Orientation="Horizontal" Spacing="10" Margin="0,20,0,0">
+			<Button Content="Dodaj" Click="AddProduct"/>
+			<Button Content="Anuluj" Click="CloseWindow"/>
+		</StackPanel>
+	</StackPanel>
+</Window>

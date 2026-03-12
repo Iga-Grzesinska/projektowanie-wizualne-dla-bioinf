@@ -1,0 +1,7 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="FoodApp.ProductWindow"
+        Title="Wybór produktów" Width="400" Height="350">
+
+	<Stack Panel Margin="20 >
+		<TextBlock 
