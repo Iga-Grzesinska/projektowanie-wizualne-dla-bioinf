@@ -10,7 +10,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        CartList.Items = Cart;
+        CartList.ItemsSource = Cart;   // poprawione
     }
 
     private void OpenProductWindow(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -22,15 +22,14 @@ public partial class MainWindow : Window
     private void OpenTransportWindow(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         var win = new TransportWindow();
-        win.Cart = Cart; // właściwość
+        win.Cart = Cart;   // właściwość
         win.Show();
     }
 
     private void OpenPaymentWindow(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         var win = new PaymentWindow();
-        win.SetCart(Cart); 
+        win.SetCart(Cart);   // metoda
         win.Show();
     }
 }
-

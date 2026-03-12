@@ -1,15 +1,17 @@
 <Window xmlns="https://github.com/avaloniaui"
-     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="FoodApp.MainWindow"
         Title="Zamawianie jedzenia" Width="600" Height="400">
-      
- 	<StackPanel Margin="20">
-       		<TextBlock Text="Koszyk:" FontSize="20"/>
-		<Listbox x:Name="CartList" Height="200"/>
-		<StackPanel Orientation="Horizontal" Spacing="10" Margin="0,20,0,0"/>
-			<Button Content="Dodaj produkt" Click="OpenProductWindow"/>
-			<Button Content="Transport" Click="OpenTransportWindow"/>
-			<Button Content="Opcje Płatności" Clicl="OpenPaymentWindow"?>
-		</StackPanel>
-	</StackPanel>
+
+    <StackPanel Margin="20">
+        <TextBlock Text="Koszyk:" FontSize="20"/>
+
+        <ListBox x:Name="CartList" Height="200"/>
+
+        <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,20,0,0">
+            <Button Content="Dodaj produkt" Click="OpenProductWindow"/>
+            <Button Content="Transport" Click="OpenTransportWindow"/>
+            <Button Content="Opcje płatności" Click="OpenPaymentWindow"/>
+        </StackPanel>
+    </StackPanel>
 </Window>

@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using System.Collections.ObjectModel;
 
@@ -5,7 +6,7 @@ namespace FoodApp;
 
 public partial class PaymentWindow : Window
 {
-    private ObservableCollection<string> _cart;
+    private ObservableCollection<string>? _cart;
 
     public PaymentWindow()
     {
@@ -23,7 +24,8 @@ public partial class PaymentWindow : Window
                         PayCard.IsChecked == true ? "Karta" :
                         "Online";
 
-        var msg = string.Join("\n", _cart);
+        
+        var msg = string.Join("\n", _cart!);
 
         var dialog = new Window
         {
