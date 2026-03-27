@@ -1,21 +1,20 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
-using System.IO;
+using Avalonia.Platform;
 using System;
 
 namespace ImageApp;
 
 public partial class MainWindow : Window
 {
-    private Bitmap? _currentImage;
+    private WriteableBitmap? _currentImage;
 
     public MainWindow()
     {
         InitializeComponent();
     }
 
-    // 🔹 LOAD IMAGE
     private async void LoadImage_Click(object sender, RoutedEventArgs e)
     {
         var dialog = new OpenFileDialog();
@@ -30,12 +29,32 @@ public partial class MainWindow : Window
 
         if (result != null && result.Length > 0)
         {
-            _currentImage = new Bitmap(result[0]);
+            var bmp = new Bitmap(result[0]);
+
+            _currentImage = new WriteableBitmap(
+                bmp.PixelSize,
+                new Vector(96, 96),
+                PixelFormat.Bgra8888);
+
+            using (var src = bmp.Lock())
+            using (var dst = _currentImage.Lock())
+            {
+                unsafe
+                {
+                    byte* s = (byte*)src.Address;
+                    byte* d = (byte*)dst.Address;
+
+                    int size = src.RowBytes * bmp.PixelSize.Height;
+
+                    for (int i = 0; i < size; i++)
+                        d[i] = s[i];
+                }
+            }
+
             MainImage.Source = _currentImage;
         }
     }
 
-    // 🔹 ROTATE 90°
     private void Rotate90_Click(object sender, RoutedEventArgs e)
     {
         if (_currentImage == null) return;
@@ -44,42 +63,166 @@ public partial class MainWindow : Window
         int h = _currentImage.PixelSize.Height;
 
         var rotated = new WriteableBitmap(
-            new Avalonia.PixelSize(h, w),
-            new Avalonia.Vector(96, 96),
-            Avalonia.Platform.PixelFormat.Bgra8888);
+            new PixelSize(h, w),
+            new Vector(96, 96),
+            PixelFormat.Bgra8888);
 
-        using (var fb1 = _currentImage.Lock())
-        using (var fb2 = rotated.Lock())
+        using (var src = _currentImage.Lock())
+        using (var dst = rotated.Lock())
         {
             unsafe
             {
-                byte* src = (byte*)fb1.Address;
-                byte* dst = (byte*)fb2.Address;
+                byte* s = (byte*)src.Address;
+                byte* d = (byte*)dst.Address;
 
-                int srcStride = fb1.RowBytes;
-                int dstStride = fb2.RowBytes;
+                int srcStride = src.RowBytes;
+                int dstStride = dst.RowBytes;
 
                 for (int y = 0; y < h; y++)
                 {
                     for (int x = 0; x < w; x++)
                     {
-                        byte* pixel = src + y * srcStride + x * 4;
+                        byte* pixel = s + y * srcStride + x * 4;
 
                         int newX = h - 1 - y;
                         int newY = x;
 
-                        byte* target = dst + newY * dstStride + newX * 4;
+                        byte* target = d + newY * dstStride + newX * 4;
 
-                        target[0] = pixel[0]; // B
-                        target[1] = pixel[1]; // G
-                        target[2] = pixel[2]; // R
-                        target[3] = pixel[3]; // A
+                        target[0] = pixel[0];
+                        target[1] = pixel[1];
+                        target[2] = pixel[2];
+                        target[3] = pixel[3];
                     }
                 }
             }
         }
 
         _currentImage = rotated;
+        MainImage.Source = _currentImage;
+    }
+
+    private void Invert_Click(object sender, RoutedEventArgs e)
+    {
+        if (_currentImage == null) return;
+
+        var result = new WriteableBitmap(
+            _currentImage.PixelSize,
+            new Vector(96, 96),
+            PixelFormat.Bgra8888);
+
+        using (var src = _currentImage.Lock())
+        using (var dst = result.Lock())
+        {
+            unsafe
+            {
+                byte* s = (byte*)src.Address;
+                byte* d = (byte*)dst.Address;
+
+                int size = src.RowBytes * _currentImage.PixelSize.Height;
+
+                for (int i = 0; i < size; i += 4)
+                {
+                    d[i] = (byte)(255 - s[i]);
+                    d[i + 1] = (byte)(255 - s[i + 1]);
+                    d[i + 2] = (byte)(255 - s[i + 2]);
+                    d[i + 3] = s[i + 3];
+                }
+            }
+        }
+
+        _currentImage = result;
+        MainImage.Source = _currentImage;
+    }
+
+    private void Flip_Click(object sender, RoutedEventArgs e)
+    {
+        if (_currentImage == null) return;
+
+        int w = _currentImage.PixelSize.Width;
+        int h = _currentImage.PixelSize.Height;
+
+        var result = new WriteableBitmap(
+            _currentImage.PixelSize,
+            new Vector(96, 96),
+            PixelFormat.Bgra8888);
+
+        using (var src = _currentImage.Lock())
+        using (var dst = result.Lock())
+        {
+            unsafe
+            {
+                byte* s = (byte*)src.Address;
+                byte* d = (byte*)dst.Address;
+
+                int stride = src.RowBytes;
+
+                for (int y = 0; y < h; y++)
+                {
+                    for (int x = 0; x < w; x++)
+                    {
+                        byte* pixel = s + y * stride + x * 4;
+                        byte* target = d + (h - 1 - y) * stride + x * 4;
+
+                        target[0] = pixel[0];
+                        target[1] = pixel[1];
+                        target[2] = pixel[2];
+                        target[3] = pixel[3];
+                    }
+                }
+            }
+        }
+
+        _currentImage = result;
+        MainImage.Source = _currentImage;
+    }
+
+    private void Green_Click(object sender, RoutedEventArgs e)
+    {
+        if (_currentImage == null) return;
+
+        var result = new WriteableBitmap(
+            _currentImage.PixelSize,
+            new Vector(96, 96),
+            PixelFormat.Bgra8888);
+
+        using (var src = _currentImage.Lock())
+        using (var dst = result.Lock())
+        {
+            unsafe
+            {
+                byte* s = (byte*)src.Address;
+                byte* d = (byte*)dst.Address;
+
+                int size = src.RowBytes * _currentImage.PixelSize.Height;
+
+                for (int i = 0; i < size; i += 4)
+                {
+                    byte b = s[i];
+                    byte g = s[i + 1];
+                    byte r = s[i + 2];
+
+                    bool isGreen = g > r && g > b;
+
+                    if (isGreen)
+                    {
+                        d[i] = b;
+                        d[i + 1] = g;
+                        d[i + 2] = r;
+                    }
+                    else
+                    {
+                        d[i] = 0;
+                        d[i + 1] = 0;
+                        d[i + 2] = 0;
+                    }
+
+                    d[i + 3] = s[i + 3];
+                }
+            }
+        }
+
+        _currentImage = result;
         MainImage.Source = _currentImage;
     }
 }
