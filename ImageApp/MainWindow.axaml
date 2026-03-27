@@ -18,13 +18,13 @@
 
             <Button Content="Rotate 90°"
                     Click="Rotate90_Click"/>
-            
+
             <Button Content="Invert Colors"
                     Click="Invert_Click"/>
 
             <Button Content="Upside Down"
                     Click="Flip_Click"/>
-            
+
             <Button Content="Only Green"
                     Click="Green_Click"/>
 
