@@ -11,7 +11,7 @@
                Height="350"
                Stretch="Uniform"/>
 
-        <WrapPanel Spacing="10">
+        <WrapPanel>
 
             <Button Content="Load"
                     Click="LoadImage_Click"/>

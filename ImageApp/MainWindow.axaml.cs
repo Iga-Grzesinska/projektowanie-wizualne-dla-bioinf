@@ -1,9 +1,10 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using System;
+using System.IO;
 
 namespace ImageApp;
 
@@ -18,42 +19,42 @@ public partial class MainWindow : Window
 
     private async void LoadImage_Click(object sender, RoutedEventArgs e)
     {
-        var dialog = new OpenFileDialog();
-        dialog.Title = "Wybierz obraz";
+        var dialog = new OpenFileDialog
+        {
+            Title = "Wybierz obraz",
+            AllowMultiple = false
+        };
+
         dialog.Filters.Add(new FileDialogFilter
         {
             Name = "Images",
-            Extensions = { "bmp", "png", "jpg" }
+            Extensions = { "png", "jpg", "jpeg", "bmp" }
         });
 
         var result = await dialog.ShowAsync(this);
 
-        if (result != null && result.Length > 0)
-        {
-            var bmp = new Bitmap(result[0]);
+        if (result == null || result.Length == 0)
+            return;
 
-            _currentImage = new WriteableBitmap(
-                bmp.PixelSize,
-                new Vector(96, 96),
-                PixelFormat.Bgra8888);
+        var path = result[0];
 
-            using (var src = bmp.Lock())
-            using (var dst = _currentImage.Lock())
-            {
-                unsafe
-                {
-                    byte* s = (byte*)src.Address;
-                    byte* d = (byte*)dst.Address;
+        using var fs = File.OpenRead(path);
+        var bmp = new Bitmap(fs);
 
-                    int size = src.RowBytes * bmp.PixelSize.Height;
+        _currentImage = new WriteableBitmap(
+            bmp.PixelSize,
+            new Vector(96, 96),
+            PixelFormat.Bgra8888);
 
-                    for (int i = 0; i < size; i++)
-                        d[i] = s[i];
-                }
-            }
+        CopyBitmap(bmp, _currentImage);
 
-            MainImage.Source = _currentImage;
-        }
+        MainImage.Source = _currentImage;
+    }
+
+    private static void CopyBitmap(Bitmap src, WriteableBitmap dst)
+    {
+        using var dstData = dst.Lock();
+        src.CopyPixels(dstData, AlphaFormat.Premul);
     }
 
     private void Rotate90_Click(object sender, RoutedEventArgs e)
@@ -68,33 +69,32 @@ public partial class MainWindow : Window
             new Vector(96, 96),
             PixelFormat.Bgra8888);
 
-        using (var src = _currentImage.Lock())
-        using (var dst = rotated.Lock())
+        unsafe
         {
-            unsafe
+            using var src = _currentImage.Lock();
+            using var dst = rotated.Lock();
+
+            byte* s = (byte*)src.Address;
+            byte* d = (byte*)dst.Address;
+
+            int srcStride = src.RowBytes;
+            int dstStride = dst.RowBytes;
+
+            for (int y = 0; y < h; y++)
             {
-                byte* s = (byte*)src.Address;
-                byte* d = (byte*)dst.Address;
-
-                int srcStride = src.RowBytes;
-                int dstStride = dst.RowBytes;
-
-                for (int y = 0; y < h; y++)
+                for (int x = 0; x < w; x++)
                 {
-                    for (int x = 0; x < w; x++)
-                    {
-                        byte* pixel = s + y * srcStride + x * 4;
+                    byte* pixel = s + y * srcStride + x * 4;
 
-                        int newX = h - 1 - y;
-                        int newY = x;
+                    int newX = h - 1 - y;
+                    int newY = x;
 
-                        byte* target = d + newY * dstStride + newX * 4;
+                    byte* target = d + newY * dstStride + newX * 4;
 
-                        target[0] = pixel[0];
-                        target[1] = pixel[1];
-                        target[2] = pixel[2];
-                        target[3] = pixel[3];
-                    }
+                    target[0] = pixel[0];
+                    target[1] = pixel[1];
+                    target[2] = pixel[2];
+                    target[3] = pixel[3];
                 }
             }
         }
@@ -112,23 +112,22 @@ public partial class MainWindow : Window
             new Vector(96, 96),
             PixelFormat.Bgra8888);
 
-        using (var src = _currentImage.Lock())
-        using (var dst = result.Lock())
+        unsafe
         {
-            unsafe
+            using var src = _currentImage.Lock();
+            using var dst = result.Lock();
+
+            byte* s = (byte*)src.Address;
+            byte* d = (byte*)dst.Address;
+
+            int size = src.RowBytes * _currentImage.PixelSize.Height;
+
+            for (int i = 0; i < size; i += 4)
             {
-                byte* s = (byte*)src.Address;
-                byte* d = (byte*)dst.Address;
-
-                int size = src.RowBytes * _currentImage.PixelSize.Height;
-
-                for (int i = 0; i < size; i += 4)
-                {
-                    d[i] = (byte)(255 - s[i]);
-                    d[i + 1] = (byte)(255 - s[i + 1]);
-                    d[i + 2] = (byte)(255 - s[i + 2]);
-                    d[i + 3] = s[i + 3];
-                }
+                d[i] = (byte)(255 - s[i]);
+                d[i + 1] = (byte)(255 - s[i + 1]);
+                d[i + 2] = (byte)(255 - s[i + 2]);
+                d[i + 3] = s[i + 3];
             }
         }
 
@@ -148,28 +147,27 @@ public partial class MainWindow : Window
             new Vector(96, 96),
             PixelFormat.Bgra8888);
 
-        using (var src = _currentImage.Lock())
-        using (var dst = result.Lock())
+        unsafe
         {
-            unsafe
+            using var src = _currentImage.Lock();
+            using var dst = result.Lock();
+
+            byte* s = (byte*)src.Address;
+            byte* d = (byte*)dst.Address;
+
+            int stride = src.RowBytes;
+
+            for (int y = 0; y < h; y++)
             {
-                byte* s = (byte*)src.Address;
-                byte* d = (byte*)dst.Address;
-
-                int stride = src.RowBytes;
-
-                for (int y = 0; y < h; y++)
+                for (int x = 0; x < w; x++)
                 {
-                    for (int x = 0; x < w; x++)
-                    {
-                        byte* pixel = s + y * stride + x * 4;
-                        byte* target = d + (h - 1 - y) * stride + x * 4;
+                    byte* pixel = s + y * stride + x * 4;
+                    byte* target = d + (h - 1 - y) * stride + x * 4;
 
-                        target[0] = pixel[0];
-                        target[1] = pixel[1];
-                        target[2] = pixel[2];
-                        target[3] = pixel[3];
-                    }
+                    target[0] = pixel[0];
+                    target[1] = pixel[1];
+                    target[2] = pixel[2];
+                    target[3] = pixel[3];
                 }
             }
         }
@@ -187,39 +185,38 @@ public partial class MainWindow : Window
             new Vector(96, 96),
             PixelFormat.Bgra8888);
 
-        using (var src = _currentImage.Lock())
-        using (var dst = result.Lock())
+        unsafe
         {
-            unsafe
+            using var src = _currentImage.Lock();
+            using var dst = result.Lock();
+
+            byte* s = (byte*)src.Address;
+            byte* d = (byte*)dst.Address;
+
+            int size = src.RowBytes * _currentImage.PixelSize.Height;
+
+            for (int i = 0; i < size; i += 4)
             {
-                byte* s = (byte*)src.Address;
-                byte* d = (byte*)dst.Address;
+                byte b = s[i];
+                byte g = s[i + 1];
+                byte r = s[i + 2];
 
-                int size = src.RowBytes * _currentImage.PixelSize.Height;
+                bool isGreen = g > r && g > b;
 
-                for (int i = 0; i < size; i += 4)
+                if (isGreen)
                 {
-                    byte b = s[i];
-                    byte g = s[i + 1];
-                    byte r = s[i + 2];
-
-                    bool isGreen = g > r && g > b;
-
-                    if (isGreen)
-                    {
-                        d[i] = b;
-                        d[i + 1] = g;
-                        d[i + 2] = r;
-                    }
-                    else
-                    {
-                        d[i] = 0;
-                        d[i + 1] = 0;
-                        d[i + 2] = 0;
-                    }
-
-                    d[i + 3] = s[i + 3];
+                    d[i] = b;
+                    d[i + 1] = g;
+                    d[i + 2] = r;
                 }
+                else
+                {
+                    d[i] = 0;
+                    d[i + 1] = 0;
+                    d[i + 2] = 0;
+                }
+
+                d[i + 3] = s[i + 3];
             }
         }
 
