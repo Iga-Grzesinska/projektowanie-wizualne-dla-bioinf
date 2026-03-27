@@ -7,15 +7,19 @@
 
     <StackPanel Margin="20" Spacing="10">
 
-        <!-- miejsce na obraz -->
         <Image Name="MainImage"
                Height="350"
-               Stretch="Uniform" />
+               Stretch="Uniform"/>
 
-        <!-- przycisk -->
-        <Button Content="Load Image"
-                Click="LoadImage_Click"
-                Width="150"/>
+        <WrapPanel Spacing="10">
+
+            <Button Content="Load"
+                    Click="LoadImage_Click"/>
+
+            <Button Content="Rotate 90°"
+                    Click="Rotate90_Click"/>
+
+        </WrapPanel>
 
     </StackPanel>
 
