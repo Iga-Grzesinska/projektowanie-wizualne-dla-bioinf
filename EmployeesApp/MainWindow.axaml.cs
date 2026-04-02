@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace EmployeesApp;
 
@@ -149,6 +150,28 @@ public partial class MainWindow : Window
             {
                 serializer.Serialize(writer, lista);
             }
+        }
+    }
+
+    private async void SaveJSON_Click(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new SaveFileDialog
+        {
+            Title = "Zapisz jako JSON",
+            Filters = { new FileDialogFilter { Name = "JSON", Extensions = { "json" } } }
+        };
+
+        var path = await dialog.ShowAsync(this);
+
+        if (path != null)
+        {
+            var lista = Employees.ToList();
+            string jsonString = JsonSerializer.Serialize(lista, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+            File.WriteAllText(path, jsonString);
         }
     }
 }
