@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using Avalonia.Controls.Models;
 using System.IO;
 using System.Linq;
+using System.Xml.Serialization;
+using System.Collections.Generic;
 
 namespace EmployeesApp;
 
@@ -124,6 +126,28 @@ public partial class MainWindow : Window
                     Wiek = int.Parse(parts[3]),
                     Stanowisko = parts[4]
                 });
+            }
+        }
+    }
+
+    private async void SaveXML_Click(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new SaveFileDialog
+        {
+            Title = "Zapisz jako XML",
+            Filters = { new FileDialogFilter { Name = "XML", Extensions = { "xml" } } }
+        };
+
+        var path = await dialog.ShowAsync(this);
+
+        if (path != null)
+        {
+            var lista = Employees.ToList();
+            XmlSerializer serializer = new XmlSerializer(typeof(List<Employee>));
+
+            using (TextWriter writer = new StreamWriter(path))
+            {
+                serializer.Serialize(writer, lista);
             }
         }
     }
