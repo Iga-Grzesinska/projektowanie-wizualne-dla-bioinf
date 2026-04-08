@@ -1,0 +1,51 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="DydelfGame.MainWindow"
+        Title="Gdzie jest Dydelf?"
+        Width="400" Height="550"
+        WindowStartupLocation="CenterScreen">
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="15">
+
+            <TextBlock Text="Gdzie jest Dydelf? 🐾" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
+
+            <StackPanel Spacing="5">
+                <TextBlock Text="Szerokość planszy (3-10):"/>
+                <NumericUpDown x:Name="WidthInput" Minimum="3" Maximum="10" Value="5"/>
+            </StackPanel>
+
+            <StackPanel Spacing="5">
+                <TextBlock Text="Wysokość planszy (3-10):"/>
+                <NumericUpDown x:Name="HeightInput" Minimum="3" Maximum="10" Value="5"/>
+            </StackPanel>
+
+            <StackPanel Spacing="5">
+                <TextBlock Text="Czas gry w sekundach (10-60):"/>
+                <NumericUpDown x:Name="TimeInput" Minimum="10" Maximum="60" Value="30"/>
+            </StackPanel>
+
+            <StackPanel Spacing="5">
+                <TextBlock Text="Liczba Dydelfów (1-6):"/>
+                <NumericUpDown x:Name="DydelfInput" Minimum="1" Maximum="6" Value="2"/>
+            </StackPanel>
+
+            <StackPanel Spacing="5">
+                <TextBlock Text="Liczba Szopów (3-8):"/>
+                <NumericUpDown x:Name="SzopInput" Minimum="3" Maximum="8" Value="3"/>
+            </StackPanel>
+
+            <StackPanel Spacing="5">
+                <TextBlock Text="Liczba Krokodyli (0-1):"/>
+                <NumericUpDown x:Name="KrokodylInput" Minimum="0" Maximum="1" Value="0"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" Margin="0,10,0,0">
+                <Button Content="Start" Width="100" Click="Start_Click"/>
+                <Button Content="Zakończ" Width="100" Click="Exit_Click"/>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+
+</Window>

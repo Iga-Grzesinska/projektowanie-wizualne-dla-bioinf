@@ -1,0 +1,38 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="DydelfGame.GameWindow"
+        Title="Gra - Gdzie jest Dydelf?"
+        WindowStartupLocation="CenterScreen">
+
+    <StackPanel Margin="10" Spacing="10">
+
+        <StackPanel Orientation="Horizontal" Spacing="20" HorizontalAlignment="Center">
+            <TextBlock x:Name="TimerText" Text="Czas: 30" FontSize="18" FontWeight="Bold"/>
+            <TextBlock x:Name="StatusText" Text="Znajdź wszystkie Dydelfy!" FontSize="18"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Spacing="20">
+
+            <Grid x:Name="GameGrid"/>
+
+            <Border Padding="10" Background="#F0F0F0" CornerRadius="8" VerticalAlignment="Top">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Legenda" FontSize="16" FontWeight="Bold"/>
+                    <TextBlock Text="🗑️ — nieodkryte pole"/>
+                    <TextBlock Text="⬜ — puste pole"/>
+                    <TextBlock Text="🐾 — Dydelf (cel!)"/>
+                    <TextBlock Text="🦝 — Szop"/>
+                    <TextBlock Text="🐊 — Krokodyl"/>
+                    <Border Height="1" Background="Gray" Margin="0,5"/>
+                    <TextBlock Text="Szop:" FontWeight="Bold"/>
+                    <TextBlock Text="Zakrywa sąsiadów po 2s" TextWrapping="Wrap" MaxWidth="150"/>
+                    <TextBlock Text="Krokodyl:" FontWeight="Bold"/>
+                    <TextBlock Text="Kliknij ponownie w 2s!" TextWrapping="Wrap" MaxWidth="150"/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+
+    </StackPanel>
+
+</Window>
