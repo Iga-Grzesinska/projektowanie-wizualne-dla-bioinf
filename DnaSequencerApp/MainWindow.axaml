@@ -1,0 +1,22 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="DnaSequencerApp.MainWindow"
+        Width="500" Height="400"
+        Title="Prosty Sekwencer DNA">
+
+    <StackPanel Margin="20" Spacing="10">
+
+        <TextBlock Text="Wprowadź sekwencję DNA:"/>
+        <TextBox x:Name="InputBox" Height="40"/>
+
+        <Button Content="Policz 4-mery"
+                Height="40"
+                Click="ButtonClicked"/>
+
+        <TextBlock Text="Wyniki:" Margin="0,20,0,0"/>
+        <TextBox x:Name="OutputBox"
+                 AcceptsReturn="True"
+                 Height="200"
+                 IsReadOnly="True"/>
+    </StackPanel>
+</Window>
