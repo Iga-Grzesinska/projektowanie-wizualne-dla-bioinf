@@ -1,34 +1,39 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EmployeesApp"
-        mc:Ignorable="d"
         x:Class="EmployeesApp.MainWindow"
-        x:DataType="local:MainWindow"
         Title="EmployeesApp"
-        Width="800" Height="600">
+        Width="800" Height="600"
+        x:CompileBindings="False">
 
     <StackPanel>
 
-         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
-            <Button Content="Dodaj" Margin="5" Click="AddEmployee_Click"/>
-            <Button Content="Usuń" Margin="5" Click="RemoveEmployee_Click"/>
-            <Button Content="Zapisz CSV" Margin="5" Click="SaveCSV_Click"/>
-            <Button Content="Wczytaj CSV" Margin="5" Click="LoadCSV_Click"/>
-        </StackPanel> 
+        <StackPanel Orientation="Horizontal" Margin="10">
+
+            <Button x:Name="AddBtn" Content="Dodaj" Margin="5"/>
+            <Button x:Name="RemoveBtn" Content="Usuń" Margin="5"/>
+            <Button x:Name="SaveCsvBtn" Content="Zapisz CSV" Margin="5"/>
+            <Button x:Name="LoadCsvBtn" Content="Wczytaj CSV" Margin="5"/>
+
+            <!-- LAB5-XML -->
+            <Button x:Name="SaveXmlBtn" Content="Zapisz XML" Margin="5"/>
+            <Button x:Name="LoadXmlBtn" Content="Wczytaj XML" Margin="5"/>
+
+        </StackPanel>
 
         <DataGrid x:Name="EmployeesDataGrid"
-          ItemsSource="{Binding Employees}"
-          AutoGenerateColumns="False"
-          Margin="10">
+                  ItemsSource="{Binding Employees}"
+                  AutoGenerateColumns="False"
+                  Margin="10">
+
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
                 <DataGridTextColumn Header="Imię" Binding="{Binding Imie}" Width="*"/>
                 <DataGridTextColumn Header="Nazwisko" Binding="{Binding Nazwisko}" Width="*"/>
                 <DataGridTextColumn Header="Wiek" Binding="{Binding Wiek}" Width="80"/>
                 <DataGridTextColumn Header="Stanowisko" Binding="{Binding Stanowisko}" Width="*"/>
-            </DataGrid.Columns> 
+            </DataGrid.Columns>
+
         </DataGrid>
 
     </StackPanel>

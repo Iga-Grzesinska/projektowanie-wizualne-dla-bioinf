@@ -1,76 +1,99 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using System.Collections.ObjectModel;
-using Avalonia.Controls.Models;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
+using System.IO;
+using System.Xml.Serialization;
+using Avalonia.Controls.Models;
 
 namespace EmployeesApp;
 
 public partial class MainWindow : Window
 {
-    public ObservableCollection<Employee> Employees { get; set; } = new ObservableCollection<Employee>();
+    public ObservableCollection<Employee> Employees { get; set; } = new();
 
     public MainWindow()
     {
         InitializeComponent();
         DataContext = this;
 
-        Employees.Add(new Employee
-        {
-            Id = 1,
-            Imie = "Jan",
-            Nazwisko = "Kowalski",
-            Wiek = 35,
-            Stanowisko = "Szef",
-        });
+        // PODPINANIE EVENTÓW (Avalonia 11)
+        AddBtn.Click += AddEmployee_Click;
+        RemoveBtn.Click += RemoveEmployee_Click;
+        SaveCsvBtn.Click += SaveCSV_Click;
+        LoadCsvBtn.Click += LoadCSV_Click;
+        SaveXmlBtn.Click += SaveXML_Click;
+        LoadXmlBtn.Click += LoadXML_Click;
+    }
 
-        Employees.Add(new Employee
+    private async void SaveXML_Click(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new SaveFileDialog
         {
-            Id = 2,
-            Imie = "Maria",
-            Nazwisko = "Kowalska",
-            Wiek = 25,
-            Stanowisko = "Żona Szefa",
-        });
+            Title = "Zapisz jako XML",
+            Filters = { new FileDialogFilter { Name = "XML", Extensions = { "xml" } } }
+        };
 
-        Employees.Add(new Employee
+        var path = await dialog.ShowAsync(this);
+
+        if (path != null)
         {
-            Id = 3,
-            Imie = "Karolina",
-            Nazwisko = "Brzęczyszczykiewicz",
-            Wiek = 30,
-            Stanowisko = "Programista",
-        });
+            var lista = Employees.ToList();
+            var serializer = new XmlSerializer(typeof(List<Employee>));
+            using var writer = new StreamWriter(path);
+            serializer.Serialize(writer, lista);
+        }
+    }
+
+    private async void LoadXML_Click(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Wczytaj XML",
+            AllowMultiple = false,
+            Filters = { new FileDialogFilter { Name = "XML", Extensions = { "xml" } } }
+        };
+
+        var result = await dialog.ShowAsync(this);
+
+        if (result != null && result.Length > 0)
+        {
+            var path = result[0];
+            var serializer = new XmlSerializer(typeof(List<Employee>));
+            using var reader = new StreamReader(path);
+            var lista = (List<Employee>)serializer.Deserialize(reader);
+            Employees.Clear();
+            foreach (var emp in lista)
+            {
+                Employees.Add(emp);
+            }
+        }
     }
 
     private async void AddEmployee_Click(object? sender, RoutedEventArgs e)
     {
-        var window = new AddEmployeeWindow();
-        await window.ShowDialog(this);
-
-        if (window.IsConfirmed)
+        var addWindow = new AddEmployeeWindow();
+        await addWindow.ShowDialog(this);
+        if (addWindow.IsConfirmed)
         {
-            int newId = Employees.Count > 0 ? Employees.Max(x => x.Id) + 1 : 1;
-
-            Employees.Add(new Employee
+            var newEmployee = new Employee
             {
-                Id = newId,
-                Imie = window.EmployeeImie,
-                Nazwisko = window.EmployeeNazwisko,
-                Wiek = window.EmployeeWiek,
-                Stanowisko = window.EmployeeStanowisko
-            });
+                Id = Employees.Any() ? Employees.Max(emp => emp.Id) + 1 : 1,
+                Imie = addWindow.EmployeeImie,
+                Nazwisko = addWindow.EmployeeNazwisko,
+                Wiek = addWindow.EmployeeWiek,
+                Stanowisko = addWindow.EmployeeStanowisko
+            };
+            Employees.Add(newEmployee);
         }
     }
 
     private void RemoveEmployee_Click(object? sender, RoutedEventArgs e)
     {
-        var selected = EmployeesDataGrid.SelectedItem as Employee;
-
-        if (selected != null)
+        if (EmployeesDataGrid.SelectedItem is Employee selectedEmployee)
         {
-            Employees.Remove(selected);
+            Employees.Remove(selectedEmployee);
         }
     }
 
@@ -87,7 +110,7 @@ public partial class MainWindow : Window
         if (path != null)
         {
             using var writer = new StreamWriter(path);
-
+            writer.WriteLine("Id,Imie,Nazwisko,Wiek,Stanowisko");
             foreach (var emp in Employees)
             {
                 writer.WriteLine($"{emp.Id},{emp.Imie},{emp.Nazwisko},{emp.Wiek},{emp.Stanowisko}");
@@ -109,21 +132,23 @@ public partial class MainWindow : Window
         if (result != null && result.Length > 0)
         {
             var path = result[0];
-
             Employees.Clear();
-
-            foreach (var line in File.ReadAllLines(path))
+            var lines = File.ReadAllLines(path);
+            foreach (var line in lines.Skip(1)) // skip header
             {
                 var parts = line.Split(',');
-
-                Employees.Add(new Employee
+                if (parts.Length == 5)
                 {
-                    Id = int.Parse(parts[0]),
-                    Imie = parts[1],
-                    Nazwisko = parts[2],
-                    Wiek = int.Parse(parts[3]),
-                    Stanowisko = parts[4]
-                });
+                    var emp = new Employee
+                    {
+                        Id = int.Parse(parts[0]),
+                        Imie = parts[1],
+                        Nazwisko = parts[2],
+                        Wiek = int.Parse(parts[3]),
+                        Stanowisko = parts[4]
+                    };
+                    Employees.Add(emp);
+                }
             }
         }
     }
