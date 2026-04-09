@@ -17,6 +17,7 @@
 
             <!-- LAB5-XML -->
             <Button x:Name="SaveXmlBtn" Content="Zapisz XML" Margin="5"/>
+            <Button x:Name="LoadXmlBtn" Content="Wczytaj XML" Margin="5"/>
 
         </StackPanel>
 
