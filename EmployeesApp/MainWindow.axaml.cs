@@ -26,6 +26,8 @@ public partial class MainWindow : Window
         LoadCsvBtn.Click += LoadCSV_Click;
         SaveXmlBtn.Click += SaveXML_Click;
         LoadXmlBtn.Click += LoadXML_Click;
+        SaveJsonBtn.Click += SaveJSON_Click;
+        LoadJsonBtn.Click += LoadJSON_Click;
     }
 
     private async void SaveXML_Click(object? sender, RoutedEventArgs e)
