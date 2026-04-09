@@ -18,6 +18,7 @@
             <Button Content="Wczytaj CSV" Margin="5" Click="LoadCSV_Click"/>
 	        <Button Content="Serializuj XML" Margin="5" Click="SaveXML_Click"/>
             <Button Content="Serializuj JSON" Margin="5" Click="SaveJSON_Click"/>
+            <Button Content="Wczytaj JSON" Margin="5" Click="LoadJSON_Click"/>
         </StackPanel> 
 
         <DataGrid x:Name="EmployeesDataGrid"

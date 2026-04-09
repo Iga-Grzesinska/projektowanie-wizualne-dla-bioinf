@@ -174,4 +174,31 @@ public partial class MainWindow : Window
             File.WriteAllText(path, jsonString);
         }
     }
+
+    private async void LoadJSON_Click(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Wczytaj JSON",
+            AllowMultiple = false,
+            Filters = { new FileDialogFilter { Name = "JSON", Extensions = { "json" } } }
+        };
+
+        var result = await dialog.ShowAsync(this);
+
+        if (result != null && result.Length > 0)
+        {
+            var path = result[0];
+            var jsonString = File.ReadAllText(path);
+            var lista = JsonSerializer.Deserialize<List<Employee>>(jsonString);
+            if (lista != null)
+            {
+                Employees.Clear();
+                foreach (var emp in lista)
+                {
+                    Employees.Add(emp);
+                }
+            }
+        }
+    }
 }
