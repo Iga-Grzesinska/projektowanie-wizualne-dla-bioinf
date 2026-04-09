@@ -153,6 +153,34 @@ public partial class MainWindow : Window
         }
     }
 
+    private async void LoadXML_Click(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Wczytaj XML",
+            AllowMultiple = false,
+            Filters = { new FileDialogFilter { Name = "XML", Extensions = { "xml" } } }
+        };
+
+        var result = await dialog.ShowAsync(this);
+
+        if (result != null && result.Length > 0)
+        {
+            var path = result[0];
+            var serializer = new XmlSerializer(typeof(List<Employee>));
+            using var reader = new StreamReader(path);
+            var lista = (List<Employee>?)serializer.Deserialize(reader);
+            if (lista != null)
+            {
+                Employees.Clear();
+                foreach (var emp in lista)
+                {
+                    Employees.Add(emp);
+                }
+            }
+        }
+    }
+
     private async void SaveJSON_Click(object? sender, RoutedEventArgs e)
     {
         var dialog = new SaveFileDialog

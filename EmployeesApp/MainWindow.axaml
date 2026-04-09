@@ -7,7 +7,7 @@
         x:Class="EmployeesApp.MainWindow"
         x:DataType="local:MainWindow"
         Title="EmployeesApp"
-        Width="800" Height="600">
+        Width="1000" Height="600" MinWidth="850">
 
     <StackPanel>
 
@@ -17,6 +17,7 @@
             <Button Content="Zapisz CSV" Margin="5" Click="SaveCSV_Click"/>
             <Button Content="Wczytaj CSV" Margin="5" Click="LoadCSV_Click"/>
 	        <Button Content="Serializuj XML" Margin="5" Click="SaveXML_Click"/>
+            <Button Content="Wczytaj XML" Margin="5" Click="LoadXML_Click"/>
             <Button Content="Serializuj JSON" Margin="5" Click="SaveJSON_Click"/>
             <Button Content="Wczytaj JSON" Margin="5" Click="LoadJSON_Click"/>
         </StackPanel> 
