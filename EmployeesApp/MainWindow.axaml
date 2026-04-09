@@ -3,22 +3,19 @@
         xmlns:local="clr-namespace:EmployeesApp"
         x:Class="EmployeesApp.MainWindow"
         Title="EmployeesApp"
-        Width="800" Height="600"
-        x:CompileBindings="False">
+        Width="1000" Height="600" MinWidth="850">
 
     <StackPanel>
 
-        <StackPanel Orientation="Horizontal" Margin="10">
-
-            <Button x:Name="AddBtn" Content="Dodaj" Margin="5"/>
-            <Button x:Name="RemoveBtn" Content="Usuń" Margin="5"/>
-            <Button x:Name="SaveCsvBtn" Content="Zapisz CSV" Margin="5"/>
-            <Button x:Name="LoadCsvBtn" Content="Wczytaj CSV" Margin="5"/>
-
-            <!-- LAB5-XML -->
-            <Button x:Name="SaveXmlBtn" Content="Zapisz XML" Margin="5"/>
-            <Button x:Name="LoadXmlBtn" Content="Wczytaj XML" Margin="5"/>
-
+         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
+            <Button Content="Dodaj" Margin="5" Click="AddEmployee_Click"/>
+            <Button Content="Usuń" Margin="5" Click="RemoveEmployee_Click"/>
+            <Button Content="Zapisz CSV" Margin="5" Click="SaveCSV_Click"/>
+            <Button Content="Wczytaj CSV" Margin="5" Click="LoadCSV_Click"/>
+            <Button Content="Serializuj XML" Margin="5" Click="SaveXML_Click"/>
+            <Button Content="Wczytaj XML" Margin="5" Click="LoadXML_Click"/>
+            <Button Content="Serializuj JSON" Margin="5" Click="SaveJSON_Click"/>
+            <Button Content="Wczytaj JSON" Margin="5" Click="LoadJSON_Click"/>
         </StackPanel>
 
         <DataGrid x:Name="EmployeesDataGrid"

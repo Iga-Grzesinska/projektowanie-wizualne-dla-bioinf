@@ -6,6 +6,7 @@ using System.Linq;
 using System.IO;
 using System.Xml.Serialization;
 using Avalonia.Controls.Models;
+using System.Text.Json;
 
 namespace EmployeesApp;
 
@@ -147,6 +148,55 @@ public partial class MainWindow : Window
                         Wiek = int.Parse(parts[3]),
                         Stanowisko = parts[4]
                     };
+                    Employees.Add(emp);
+                }
+            }
+        }
+    }
+
+    private async void SaveJSON_Click(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new SaveFileDialog
+        {
+            Title = "Zapisz jako JSON",
+            Filters = { new FileDialogFilter { Name = "JSON", Extensions = { "json" } } }
+        };
+
+        var path = await dialog.ShowAsync(this);
+
+        if (path != null)
+        {
+            var lista = Employees.ToList();
+            string jsonString = JsonSerializer.Serialize(lista, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+            File.WriteAllText(path, jsonString);
+        }
+    }
+
+    private async void LoadJSON_Click(object? sender, RoutedEventArgs e)
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = "Wczytaj JSON",
+            AllowMultiple = false,
+            Filters = { new FileDialogFilter { Name = "JSON", Extensions = { "json" } } }
+        };
+
+        var result = await dialog.ShowAsync(this);
+
+        if (result != null && result.Length > 0)
+        {
+            var path = result[0];
+            var jsonString = File.ReadAllText(path);
+            var lista = JsonSerializer.Deserialize<List<Employee>>(jsonString);
+            if (lista != null)
+            {
+                Employees.Clear();
+                foreach (var emp in lista)
+                {
                     Employees.Add(emp);
                 }
             }

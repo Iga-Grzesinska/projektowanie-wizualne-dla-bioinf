@@ -1,0 +1,23 @@
+[
+  {
+    "Id": 1,
+    "Imie": "Jan",
+    "Nazwisko": "Kowalski",
+    "Wiek": 35,
+    "Stanowisko": "Szef"
+  },
+  {
+    "Id": 2,
+    "Imie": "Maria",
+    "Nazwisko": "Kowalska",
+    "Wiek": 25,
+    "Stanowisko": "\u017Bona Szefa"
+  },
+  {
+    "Id": 3,
+    "Imie": "Karolina",
+    "Nazwisko": "Brz\u0119czyszczykiewicz",
+    "Wiek": 30,
+    "Stanowisko": "Programista"
+  }
+]
